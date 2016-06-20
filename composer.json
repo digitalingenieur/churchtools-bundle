@@ -28,9 +28,9 @@
             "Diging\\ChurchtoolsBundle\\": "src/"
         },
         "classmap": [
-            "src/Resources/contao/classes",
-            "src/Resources/contao/models",
-            "src/Resources/contao/modules"
+            //"src/Resources/contao/classes",
+            //"src/Resources/contao/models",
+            //"src/Resources/contao/modules"
         ]
     },
     "autoload-dev": {

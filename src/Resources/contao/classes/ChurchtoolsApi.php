@@ -15,13 +15,21 @@ class ChurchtoolsApi{
 	protected $auth = array();
 
 
-	public function __construct($email='samuel.heer@diging.de', $password='Password1'){
+	public function __construct($email='', $password=''){
+
+		if($email=='' && $GLOBALS['TL_CONFIG']['churchtools_email']==''){
+			throw new \InvalidArgumentException('No E-Mail given. Please fill Churchtools-Mail Settings.');
+		}
+		if($password=='' && $GLOBALS['TL_CONFIG']['churchtools_password']==''){
+			throw new \InvalidArgumentException('No Password given. Please fill Contao Settings Churchtools section.');
+		}
+
 		
 		$options = array(
 			CURLOPT_URL => $GLOBALS['TL_CONFIG']['churchtools_baseUrl'].'/?q=login',
 			CURLOPT_POSTFIELDS => array(
-				'email' => $email,
-				'password' => $password,
+				'email' => $email==''? $GLOBALS['TL_CONFIG']['churchtools_email']:$email,
+				'password' => $password==''? \Encryption::decrypt($GLOBALS['TL_CONFIG']['churchtools_password']):$password,
 				'directtool' => 'yes'
 				)
 			);
@@ -43,11 +51,13 @@ class ChurchtoolsApi{
 		return $masterData->category;
 	}
 
-	public function loadEvents($arrCategories){
+	public function loadEvents($arrCategories,$daysFrom,$daysTo){
 		$postfields = array(
-			'func' => 'getCalPerCategory',
-			'category_ids' => $arrCategories,
-			'directtool' => 'yes'
+			'func'			=> 'getCalendarEvents',
+			'category_ids' 	=> $arrCategories,
+			'directtool' 	=> 'yes',
+			'from' 			=> $daysFrom,
+			'to' 			=> $daysTo
 		);
 
 		$options = array(

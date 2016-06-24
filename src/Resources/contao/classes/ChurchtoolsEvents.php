@@ -12,31 +12,59 @@ namespace Diging\ChurchtoolsBundle;
 
 class ChurchtoolsEvents extends \Backend{
 
- 	public function loadAndParseEvents(){
+ 	static public function loadAndParseEvents($dc){
 
- 		$id = strlen(\Input::get('id')) ? \Input::get('id') : CURRENT_ID;
-
-		$arrCtCalendars = $this->Database->prepare("SELECT CTCalendars FROM tl_calendar WHERE id=?")
-			->limit(1)
-			->execute($id);
-
-		$arrCategoryIds = deserialize($arrCtCalendars->CTCalendars);
+		$calendar = \CalendarModel::findByPk($dc->id);
+		$arrCategoryIds = deserialize($calendar->churchtoolsCalendars);
 
  		$api = new ChurchtoolsApi();
- 		$eventCategories = $api->loadEvents($arrCategoryIds);
- 		
-
- 		foreach($eventCategories as $id => $category){
- 			dump($category);
- 			foreach($category as $event){
- 				//dump($event->bezeichnung);
- 			}
- 		}
+ 		$events = $api->loadEvents($arrCategoryIds,$calendar->churchtoolsDaysFrom,$calendar->churchtoolsDaysTo);
 
  		//Clear Database
+ 		$collection = \CalendarEventsModel::findByPid($dc->id);
+ 		if(isset($collection)){
+ 			while($collection->next()){
+ 				$collection->delete();
+ 			}
+ 		}
+ 		
+ 		foreach($events as $event){
+ 			$startdate = new \DateTime($event->startdate);
+ 			$enddate = new \DateTime($event->enddate);
 
- 		//Parse Events into Database
+ 			$fullDayEvent = ($startdate->format('His') == 000000) && ($enddate->format('His') == 000000)? true : false;
 
- 		dump('Load events in ChurchtoolsEvents loaded');
+ 			$model = new \CalendarEventsModel();
+ 			$model->pid = $dc->id;
+ 			$model->tstamp = time();
+ 			$model->title = $event->bezeichnung;
+ 			//$model->alias = 
+ 			//$model->author = 
+
+ 			if(!$fullDayEvent){
+ 				$model->addTime = 1;
+ 				$model->startTime = $startdate->getTimestamp();
+ 				$model->endTime = $enddate->getTimestamp();	
+ 			}
+ 			else{
+ 				$model->startTime = $startdate->getTimestamp();
+ 				$model->endTime = $enddate->getTimestamp();	
+ 			}
+ 			
+ 			$model->startDate = $startdate->getTimestamp();
+ 			if($startdate!=$enddate){
+ 				$model->endDate =  $enddate->getTimestamp();	
+ 			}
+
+ 			//$model->location = 
+ 			//$model->teaser = 
+ 			$model->published = 1;
+ 			$model->save();
+ 		}
+
+
+ 		if(\Input::get('key')){
+ 			\Controller::redirect(preg_replace('/(&(amp;)?|\?)key=[^& ]*/i', '', \Environment::get('request')));	
+ 		}
  	}
  }

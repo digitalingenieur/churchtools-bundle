@@ -12,14 +12,16 @@
 /**
  * System configuration
  */
-$GLOBALS['TL_DCA']['tl_calendar']['palettes']['default'] = $GLOBALS['TL_DCA']['tl_calendar']['palettes']['default'].';{churchtools_legend},consumeCTEvents';
-$GLOBALS['TL_DCA']['tl_calendar']['palettes']['__selector__'][] = 'consumeCTEvents';
-$GLOBALS['TL_DCA']['tl_calendar']['subpalettes']['consumeCTEvents'] = 'CTCalendars';
+$GLOBALS['TL_DCA']['tl_calendar']['palettes']['default'] = $GLOBALS['TL_DCA']['tl_calendar']['palettes']['default'].';{churchtools_legend},churchtoolsEnableEvents';
+$GLOBALS['TL_DCA']['tl_calendar']['palettes']['__selector__'][] = 'churchtoolsEnableEvents';
+$GLOBALS['TL_DCA']['tl_calendar']['subpalettes']['churchtoolsEnableEvents'] = 'churchtoolsCalendars,churchtoolsDaysFrom,churchtoolsDaysTo';
+
+$GLOBALS['TL_DCA']['tl_calendar']['config']['onsubmit_callback'][]=array('tl_calendar_churchtools','refreshChurchtoolsEvents');
 
 
-$GLOBALS['TL_DCA']['tl_calendar']['fields']['consumeCTEvents'] = array
+$GLOBALS['TL_DCA']['tl_calendar']['fields']['churchtoolsEnableEvents'] = array
 (
-	'label'                   => &$GLOBALS['TL_LANG']['tl_calendar']['consumeCTEvents'],
+	'label'                   => &$GLOBALS['TL_LANG']['tl_calendar']['churchtoolsEnableEvents'],
 	'exclude'                 => true,
 	'filter'                  => true,
 	'inputType'               => 'checkbox',
@@ -27,16 +29,34 @@ $GLOBALS['TL_DCA']['tl_calendar']['fields']['consumeCTEvents'] = array
 	'sql'                     => "char(1) NOT NULL default ''"
 );
 
-$GLOBALS['TL_DCA']['tl_calendar']['fields']['CTCalendars'] = array
+$GLOBALS['TL_DCA']['tl_calendar']['fields']['churchtoolsCalendars'] = array
 (
-	'label'                   => &$GLOBALS['TL_LANG']['tl_calendar']['CTCalendars'],
+	'label'                   => &$GLOBALS['TL_LANG']['tl_calendar']['churchtoolsCalendars'],
 	'exclude'                 => true,
 	'filter'                  => true,
 	'inputType'               => 'checkbox',
-	'eval'                    => array('multiple'=>true),
+	'eval'                    => array('mandatory'=>true, 'multiple'=>true),
 	'options_callback'		  => array('tl_calendar_churchtools','getCalendarsFromChurchtools'),
 	'sql'                     => "blob NULL"
 );
+
+$GLOBALS['TL_DCA']['tl_calendar']['fields']['churchtoolsDaysFrom'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_calendar']['churchtoolsDaysFrom'],
+	'exclude'                 => true,
+	'inputType'               => 'text',
+	'eval'                    => array('mandatory'=>true, 'rgxp'=>'digit', 'maxlength'=>4, 'tl_class'=>'w50'),
+	'sql'                     => "int(4) NOT NULL default '0'"
+);
+$GLOBALS['TL_DCA']['tl_calendar']['fields']['churchtoolsDaysTo'] = array
+(
+	'label'                   => &$GLOBALS['TL_LANG']['tl_calendar']['churchtoolsDaysTo'],
+	'exclude'                 => true,
+	'inputType'               => 'text',
+	'eval'                    => array('mandatory'=>true, 'rgxp'=>'digit', 'maxlength'=>4, 'tl_class'=>'w50'),
+	'sql'                     => "int(4) NOT NULL default '7'"
+);
+
 
 
 class tl_calendar_churchtools extends Backend {
@@ -48,20 +68,23 @@ class tl_calendar_churchtools extends Backend {
 	 */
 	public function getCalendarsFromChurchtools()
 	{
-		/*if (!$this->User->isAdmin && !is_array($this->User->calendars))
-		{
-			return array();
-		}*/
-
 		$arrCalendars = array();
-		
-		$api = new \Diging\ChurchtoolsBundle\ChurchtoolsApi();
-		$categories = $api->getCalendarCategories();	
-		
-		foreach($categories as $category){
-			$arrCalendars[$category->id] = $category->bezeichnung;
+	
+		//Execute Api Call only in "Edit mode" (create or update)	
+		if(\Input::get('act') == 'edit'){
+			$api = new \Diging\ChurchtoolsBundle\ChurchtoolsApi();
+			$categories = $api->getCalendarCategories();	
+			
+			foreach($categories as $category){
+				$arrCalendars[$category->id] = $category->bezeichnung;
+			}
 		}
 		
 		return $arrCalendars;
+	}
+
+
+	public function refreshChurchtoolsEvents(DataContainer $dc){
+		\Diging\ChurchtoolsBundle\ChurchtoolsEvents::loadAndParseEvents($dc);
 	}
 }

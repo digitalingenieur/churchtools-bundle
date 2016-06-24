@@ -11,11 +11,12 @@
 $GLOBALS['TL_DCA']['tl_calendar_events']['config']['onload_callback'][] = array('tl_calendar_events_churchtools', 'disableCalendarFunctions');
 $GLOBALS['TL_DCA']['tl_calendar_events']['list']['global_operations']['load'] = array
 (
-	'label'               => &$GLOBALS['TL_LANG']['MSC']['load'],
+	'label'               => &$GLOBALS['TL_LANG']['tl_calendar_events']['load'],
 	'href'                => 'key=loadEvents',
-	'class'               => 'header_loadEvents',
+	'class'               => 'header_sync',
 	'attributes'          => 'onclick="Backend.getScrollOffset()" accesskey="l"'
 );
+
 
 /**
  * Provide miscellaneous methods that are used by the data configuration array.
@@ -31,14 +32,19 @@ class tl_calendar_events_churchtools extends tl_calendar_events
 
 		$id = strlen(Input::get('id')) ? Input::get('id') : CURRENT_ID;
 
-		$objCalendar = $this->Database->prepare("SELECT consumeCTEvents FROM tl_calendar WHERE id=?")
-			->limit(1)
-			->execute($id);
+		$calendar = \CalendarModel::findByPk($id);	
 		
-		if($objCalendar->consumeCTEvents){
+		if($calendar->churchtoolsEnableEvents){
 			unset($GLOBALS['TL_DCA']['tl_calendar_events']['list']['global_operations']['all']);
-			//TODO: Remove "New Event";
+			$GLOBALS['TL_DCA']['tl_calendar_events']['config']['closed'] = true;
+			unset($GLOBALS['TL_DCA']['tl_calendar_events']['list']['operations']['edit']);
+			unset($GLOBALS['TL_DCA']['tl_calendar_events']['list']['operations']['editheader']);
+			unset($GLOBALS['TL_DCA']['tl_calendar_events']['list']['operations']['copy']);
+			unset($GLOBALS['TL_DCA']['tl_calendar_events']['list']['operations']['delete']);
+			unset($GLOBALS['TL_DCA']['tl_calendar_events']['list']['operations']['toggle']);
+			unset($GLOBALS['TL_DCA']['tl_calendar_events']['list']['operations']['cut']);
 		};
+
 	}
 
 }

@@ -19,10 +19,6 @@ $GLOBALS['TL_DCA']['tl_settings']['fields']['churchtools_baseUrl'] = array
 	'label'                   => &$GLOBALS['TL_LANG']['tl_settings']['churchtools_baseUrl'],
 	'inputType'               => 'text',		
 	'eval'                    => array('rgxp'=>'url', 'trailingSlash'=>false, 'tl_class'=>'w50'),
-		/*'save_callback' => array
-		(
-			array('tl_settings', 'checkStaticUrl')
-		)*/
 	);
 
 $GLOBALS['TL_DCA']['tl_settings']['fields']['churchtools_email'] = array

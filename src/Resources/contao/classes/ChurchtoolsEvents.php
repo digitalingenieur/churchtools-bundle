@@ -10,8 +10,19 @@
 
 namespace Diging\ChurchtoolsBundle;
 
+/**
+ * Provide methods consuming events from churchtools api.
+ *
+ * @author Samuel Heer <https://github.com/digitalingenieur>
+ */
 class ChurchtoolsEvents extends \Backend{
 
+ 	/**
+	 * Load events from churchtools api based on calendar settings
+	 * Deletes all events in databse, so temporary changes will get lost
+	 *
+	 * @param /DataContainer $dc
+	 */
  	static public function loadAndParseEvents($dc){
 
 		$calendar = \CalendarModel::findByPk($dc->id);

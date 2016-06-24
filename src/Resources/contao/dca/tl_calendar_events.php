@@ -21,13 +21,15 @@ $GLOBALS['TL_DCA']['tl_calendar_events']['list']['global_operations']['load'] = 
 /**
  * Provide miscellaneous methods that are used by the data configuration array.
  *
- * @property Contao\Calendar $Calendar
- *
- * @author Leo Feyer <https://github.com/leofeyer>
+ * @author Samuel Heer <https://github.com/digitalingenieur>
  */
 class tl_calendar_events_churchtools extends tl_calendar_events
 {
 
+	/**
+	 * Make DCA as read only if calendar is set as churchtools calendar.
+	 * 
+	 */
 	public function disableCalendarFunctions(){
 
 		$id = strlen(Input::get('id')) ? Input::get('id') : CURRENT_ID;

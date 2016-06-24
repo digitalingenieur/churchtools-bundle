@@ -83,7 +83,10 @@ class tl_calendar_churchtools extends Backend {
 		return $arrCalendars;
 	}
 
-
+	/**
+	 * Trigger Reload of churchtools events
+	 *
+	 */
 	public function refreshChurchtoolsEvents(DataContainer $dc){
 		\Diging\ChurchtoolsBundle\ChurchtoolsEvents::loadAndParseEvents($dc);
 	}

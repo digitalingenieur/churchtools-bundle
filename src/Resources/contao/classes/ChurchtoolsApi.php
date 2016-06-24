@@ -10,6 +10,11 @@
 
 namespace Diging\ChurchtoolsBundle;
 
+/**
+ * Provide methods regarding churchtools api.
+ *
+ * @author Samuel Heer <https://github.com/digitalingenieur>
+ */
 class ChurchtoolsApi{
 
 	/**
@@ -32,7 +37,6 @@ class ChurchtoolsApi{
 		if($password=='' && $GLOBALS['TL_CONFIG']['churchtools_password']==''){
 			throw new \InvalidArgumentException('No Password given. Please fill Contao Settings Churchtools section.');
 		}
-
 		
 		$postfields = array(
 				'email' => $email==''? $GLOBALS['TL_CONFIG']['churchtools_email']:$email,
@@ -46,8 +50,10 @@ class ChurchtoolsApi{
 	}
 
 	/**
-	 * On object creation API gets contacted with credentials to authenticate the user
+	 * Return categories array from api.
+	 * Called api function: getMasterData
 	 *
+	 * @return array categories
 	 */
 	public function getCalendarCategories(){
 
@@ -61,6 +67,15 @@ class ChurchtoolsApi{
 		return $masterData->category;
 	}
 
+	/**
+	 * Return Events for given categories
+	 * Called api function: getCalenderEvents
+	 *
+	 * @param array $arrCategories
+	 * @param int $daysFrom
+	 * @param int $daysTo
+	 * @return array events
+	 */
 	public function loadEvents($arrCategories,$daysFrom,$daysTo){
 		$postfields = array(
 			'func'			=> 'getCalendarEvents',
@@ -74,25 +89,26 @@ class ChurchtoolsApi{
 		return $this->request($url,$postfields);
 	}
 
+	/**
+	 * Request helper function to query the api via curl
+	 * TODO: Throw exception if response is null (server nicht erreichbar?)
+	 * TODO: Throw exception if url is not given
+	 * 
+	 * @param string $strUrl
+	 * @param array $arrPostfields
+	 * @return array data
+	 */
+	protected function request($strUrl, $arrPostfields){
 
-	protected function request($url, $postfields){
-		//TODO: Throw exception if response is null (server nicht erreichbar?)
-		//TODO: Throw exception if url is not given
 		$ch = curl_init();
-
-		//curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
-		//curl_setopt($ch,CURLOPT_POST, true);
-		//curl_setopt($ch,CURLOPT_HEADER, true);
-		
-		//curl_setopt($ch,CURLOPT_COOKIE,implode($this->auth,';'));
 		
 		$arrOptions = array(
 			CURLOPT_RETURNTRANSFER 	=> true,
 			CURLOPT_POST 			=> true,
 			CURLOPT_HEADER 			=> true,
 			CURLOPT_COOKIE			=> implode($this->auth,';'),
-			CURLOPT_URL 			=> $url,
-			CURLOPT_POSTFIELDS 		=> http_build_query($postfields)
+			CURLOPT_URL 			=> $strUrl,
+			CURLOPT_POSTFIELDS 		=> http_build_query($arrPostfields)
 		);
 		curl_setopt_array($ch, $arrOptions);
 
@@ -101,10 +117,18 @@ class ChurchtoolsApi{
 
 		$this->getCookiesFromCurlHeader($result);
 		
-		$json = json_decode(substr($result, strrpos($result, "\r\n")));
-		return $json->data;
+		$arrResult = json_decode(substr($result, strrpos($result, "\r\n")));
+		return $arrResult->data;
 	}
 
+	/**
+	 * Helper class to get Set-Cookie out of CURL header and store it in auth attribute.
+	 * TODO: This could be store in SESSION also, to reduce api calls
+	 *
+	 * @param string $arrCategories
+	 * @param string $daysFrom
+	 * @param string $daysTo
+	 */
 	private function getCookiesFromCurlHeader($response){
 
     	$header_text = substr($response, 0, strrpos($response, "\r\n"));
@@ -117,7 +141,4 @@ class ChurchtoolsApi{
 	    	}
 	    }
 	}
-	
-	
-
 }

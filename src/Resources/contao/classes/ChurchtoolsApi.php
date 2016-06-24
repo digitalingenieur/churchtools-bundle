@@ -12,9 +12,18 @@ namespace Diging\ChurchtoolsBundle;
 
 class ChurchtoolsApi{
 
+	/**
+	 *  Store Authentication Cookie From Login Response
+	 * @var array
+	 */
 	protected $auth = array();
 
-
+	/**
+	 * On object creation API gets contacted with credentials to authenticate the user
+	 *
+	 * @param string $email
+	 * @param string $password
+	 */
 	public function __construct($email='', $password=''){
 
 		if($email=='' && $GLOBALS['TL_CONFIG']['churchtools_email']==''){
@@ -25,29 +34,30 @@ class ChurchtoolsApi{
 		}
 
 		
-		$options = array(
-			CURLOPT_URL => $GLOBALS['TL_CONFIG']['churchtools_baseUrl'].'/?q=login',
-			CURLOPT_POSTFIELDS => array(
+		$postfields = array(
 				'email' => $email==''? $GLOBALS['TL_CONFIG']['churchtools_email']:$email,
 				'password' => $password==''? \Encryption::decrypt($GLOBALS['TL_CONFIG']['churchtools_password']):$password,
 				'directtool' => 'yes'
-				)
-			);
-
+		);
+		$url = $GLOBALS['TL_CONFIG']['churchtools_baseUrl'].'/?q=login';
+		
+		$this->request($url, $postfields);
 		//TODO: Exception Login not successful
-		$this->request($options);
 	}
 
+	/**
+	 * On object creation API gets contacted with credentials to authenticate the user
+	 *
+	 */
 	public function getCalendarCategories(){
 
-		$options = array(
-			CURLOPT_URL => $GLOBALS['TL_CONFIG']['churchtools_baseUrl'].'/index.php?q=churchcal/ajax',
-			CURLOPT_POSTFIELDS => array(
-				'func' => 'getMasterData',
-				'directtool' => 'yes'
-				)
-			);
-		$masterData = $this->request($options);
+		$postfields = array(
+			'func' => 'getMasterData',
+			'directtool' 	=> 'yes'
+		);
+
+		$url = $GLOBALS['TL_CONFIG']['churchtools_baseUrl'].'/index.php?q=churchcal/ajax';
+		$masterData = $this->request($url,$postfields);
 		return $masterData->category;
 	}
 
@@ -60,26 +70,30 @@ class ChurchtoolsApi{
 			'to' 			=> $daysTo
 		);
 
-		$options = array(
-			CURLOPT_URL => $GLOBALS['TL_CONFIG']['churchtools_baseUrl'].'/index.php?q=churchcal/ajax',
-			CURLOPT_POSTFIELDS => http_build_query($postfields)
-			);
-
-		return $this->request($options);
+		$url = $GLOBALS['TL_CONFIG']['churchtools_baseUrl'].'/index.php?q=churchcal/ajax';
+		return $this->request($url,$postfields);
 	}
 
 
-	protected function request($arrOptions){
+	protected function request($url, $postfields){
 		//TODO: Throw exception if response is null (server nicht erreichbar?)
 		//TODO: Throw exception if url is not given
 		$ch = curl_init();
 
-		curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch,CURLOPT_POST, true);
-		curl_setopt($ch,CURLOPT_HEADER, true);
+		//curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
+		//curl_setopt($ch,CURLOPT_POST, true);
+		//curl_setopt($ch,CURLOPT_HEADER, true);
 		
-		curl_setopt($ch,CURLOPT_COOKIE,implode($this->auth,';'));
+		//curl_setopt($ch,CURLOPT_COOKIE,implode($this->auth,';'));
 		
+		$arrOptions = array(
+			CURLOPT_RETURNTRANSFER 	=> true,
+			CURLOPT_POST 			=> true,
+			CURLOPT_HEADER 			=> true,
+			CURLOPT_COOKIE			=> implode($this->auth,';'),
+			CURLOPT_URL 			=> $url,
+			CURLOPT_POSTFIELDS 		=> http_build_query($postfields)
+		);
 		curl_setopt_array($ch, $arrOptions);
 
 		$result = curl_exec($ch);

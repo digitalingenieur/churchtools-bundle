@@ -23,6 +23,7 @@ class ChurchtoolsApi{
 	 */
 	protected $auth = array();
 
+
 	/**
 	 * On object creation API gets contacted with credentials to authenticate the user
 	 *
@@ -46,7 +47,6 @@ class ChurchtoolsApi{
 		$url = $GLOBALS['TL_CONFIG']['churchtools_baseUrl'].'/?q=login';
 		
 		$this->request($url, $postfields);
-		//TODO: Exception Login not successful
 	}
 
 	/**
@@ -91,8 +91,6 @@ class ChurchtoolsApi{
 
 	/**
 	 * Request helper function to query the api via curl
-	 * TODO: Throw exception if response is null (server nicht erreichbar?)
-	 * TODO: Throw exception if url is not given
 	 * 
 	 * @param string $strUrl
 	 * @param array $arrPostfields
@@ -113,12 +111,28 @@ class ChurchtoolsApi{
 		curl_setopt_array($ch, $arrOptions);
 
 		$result = curl_exec($ch);
+		$info = curl_getinfo($ch);
 		curl_close($ch);
 
-		$this->getCookiesFromCurlHeader($result);
+		if($info['http_code'] == 200 && $info['content_type'] == 'application/json'){
+
+			if($result->status == 'fail'){
+				throw new \Exception($result->data);
+			}
+
+			$this->getCookiesFromCurlHeader($result);
+
+			$arrResult = json_decode(substr($result, strrpos($result, "\r\n")));
+			return $arrResult->data;	
+		}
+		else if($info['http_code'] == 0){
+			throw new \Exception('Churchtools could not be reached. Please check settings.');
+		}
+		else{
+			throw new \Exception('Something went wrong with the API call.');
+		}
+
 		
-		$arrResult = json_decode(substr($result, strrpos($result, "\r\n")));
-		return $arrResult->data;
 	}
 
 	/**

@@ -78,4 +78,14 @@ class ChurchtoolsEvents extends \Backend{
  			\Controller::redirect(preg_replace('/(&(amp;)?|\?)key=[^& ]*/i', '', \Environment::get('request')));	
  		}
  	}
+
+ 	public function reloadChurchtoolsEventsHook(){
+ 		$calendar = \CalendarModel::findByChurchtoolsEnableEvents('1');
+ 		if(isset($calendar)){
+ 			while($calendar->next()){
+ 				dump($calendar);	
+ 				$this->loadAndParseEvents($calendar);	
+ 			}
+ 		} 		
+ 	}
  }

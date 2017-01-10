@@ -72,7 +72,7 @@ class tl_calendar_churchtools extends Backend {
 	
 		//Execute Api Call only in "Edit mode" (create or update)	
 		if(\Input::get('act') == 'edit'){
-			$api = new \Diging\ChurchtoolsBundle\ChurchtoolsApi();
+			$api = new\Diging\Contao\ChurchtoolsBundle\ChurchtoolsApi();
 			$categories = $api->getCalendarCategories();	
 			
 			foreach($categories as $category){
@@ -88,6 +88,6 @@ class tl_calendar_churchtools extends Backend {
 	 *
 	 */
 	public function refreshChurchtoolsEvents(DataContainer $dc){
-		\Diging\ChurchtoolsBundle\ChurchtoolsEvents::loadAndParseEvents($dc);
+		\Diging\Contao\ChurchtoolsBundle\ChurchtoolsEvents::loadAndParseEvents($dc);
 	}
 }

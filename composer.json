@@ -10,25 +10,17 @@
         }
     ],
     "require": {
-        "php": ">=5.5.0",
-        "symfony/framework-bundle": "~2.8|~3.0",
-        "contao/core-bundle": "~4.2"
+        "php": ">=5.5.0"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "~1.8",
         "phpunit/phpunit": "~4.5",
-        "satooshi/php-coveralls": "~0.6",
-        "symfony/phpunit-bridge": "~2.8|~3.0"
-    },
-    "conflict": {
-        "contao/core": "*"
     },
     "autoload": {
         "psr-4": {
             "Diging\\ChurchtoolsBundle\\": "src/"
         },
         "classmap": [
-            "src/Resources/contao/classes"
+            "src/"
         ]
     },
     "autoload-dev": {
@@ -40,8 +32,10 @@
         "preferred-install": "dist"
     },
     "extra": {
-        "branch-alias": {
-            "dev-develop": "4.3.x-dev"
+        "contao":{
+            "sources":{
+                "":"system/modules/churchtools"
+            }
         }
     }
 }

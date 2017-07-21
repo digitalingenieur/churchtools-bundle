@@ -8,17 +8,9 @@
  * @license LGPL-3.0+
  */
 
-//$GLOBALS['BE_MOD']['content']['calendar']['loadEvents'] = array('\Diging\ChurchtoolsBundle\ChurchtoolsEvents','loadAndParseEvents');
-
-
-/**
- * Hooks
- */
-//$GLOBALS['TL_HOOKS']['checkCredentials'][] = array('\Diging\Contao\ChurchtoolsBundle\ChurchtoolsAuthentication', 'checkCredentials');
-$GLOBALS['TL_HOOKS']['getAllEvents'][] = array('\Diging\Contao\ChurchtoolsBundle\ChurchtoolsEvents', 'getChurchtoolsEvents');
-
+$GLOBALS['BE_MOD']['content']['calendar']['loadEvents'] = array('\Diging\Contao\ChurchtoolsBundle\ChurchtoolsEvents','loadEvents');
 
 /**
  * Cron jobs
  */
-//$GLOBALS['TL_CRON']['daily']['reloadChurchtoolsEvents'] = array('\Diging\ChurchtoolsBundle\ChurchtoolsEvents','reloadChurchtoolsEventsHook');
+$GLOBALS['TL_CRON']['daily']['reloadChurchtoolsEvents'] = array('\Diging\Contao\ChurchtoolsBundle\ChurchtoolsEvents','reloadChurchtoolsEventsHook');

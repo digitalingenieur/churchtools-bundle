@@ -14,7 +14,7 @@
  */
 $GLOBALS['TL_DCA']['tl_calendar']['palettes']['default'] = $GLOBALS['TL_DCA']['tl_calendar']['palettes']['default'].';{churchtools_legend},churchtoolsEnableEvents';
 $GLOBALS['TL_DCA']['tl_calendar']['palettes']['__selector__'][] = 'churchtoolsEnableEvents';
-$GLOBALS['TL_DCA']['tl_calendar']['subpalettes']['churchtoolsEnableEvents'] = 'churchtoolsCalendars,churchtoolsDaysFrom,churchtoolsDaysTo';
+$GLOBALS['TL_DCA']['tl_calendar']['subpalettes']['churchtoolsEnableEvents'] = 'churchtoolsCalendars';
 
 $GLOBALS['TL_DCA']['tl_calendar']['config']['onsubmit_callback'][]=array('tl_calendar_churchtools','refreshChurchtoolsEvents');
 
@@ -40,6 +40,7 @@ $GLOBALS['TL_DCA']['tl_calendar']['fields']['churchtoolsCalendars'] = array
 	'sql'                     => "blob NULL"
 );
 
+/*
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['churchtoolsDaysFrom'] = array
 (
 	'label'                   => &$GLOBALS['TL_LANG']['tl_calendar']['churchtoolsDaysFrom'],
@@ -55,7 +56,7 @@ $GLOBALS['TL_DCA']['tl_calendar']['fields']['churchtoolsDaysTo'] = array
 	'inputType'               => 'text',
 	'eval'                    => array('mandatory'=>true, 'rgxp'=>'digit', 'maxlength'=>4, 'tl_class'=>'w50'),
 	'sql'                     => "int(4) NOT NULL default '7'"
-);
+);*/
 
 
 
@@ -68,15 +69,14 @@ class tl_calendar_churchtools extends Backend {
 	 */
 	public function getCalendarsFromChurchtools()
 	{
-		$arrCalendars = array();
+		$arrCalendars = [];
 	
 		//Execute Api Call only in "Edit mode" (create or update)	
 		if(\Input::get('act') == 'edit'){
-			$api = new\Diging\Contao\ChurchtoolsBundle\ChurchtoolsApi();
-			$categories = $api->getCalendarCategories();	
+			$categories = \Diging\ChurchtoolsAPI\Models\Calendar::get();
 			
 			foreach($categories as $category){
-				$arrCalendars[$category->id] = $category->bezeichnung;
+				$arrCalendars[$category->id] = $category->name;
 			}
 		}
 		
@@ -88,6 +88,12 @@ class tl_calendar_churchtools extends Backend {
 	 *
 	 */
 	public function refreshChurchtoolsEvents(DataContainer $dc){
-		\Diging\Contao\ChurchtoolsBundle\ChurchtoolsEvents::loadAndParseEvents($dc);
+		if($dc->activeRecord->churchtoolsEnableEvents == 1)
+		{
+			$class = new \Diging\Contao\ChurchtoolsBundle\ChurchtoolsEvents();
+			$class->setCalendar($dc->activeRecord);
+			$class->loadAndParseEvents();
+		}
+		
 	}
 }

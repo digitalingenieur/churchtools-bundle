@@ -1,6 +1,6 @@
 {
     "name": "digitalingenieur/churchtools-bundle",
-    "type": "contao-bundle",
+    "type": "contao-module",
     "description": "Contao 4 Churchtools bundle",
     "license": "LGPL-3.0+",
     "authors": [
@@ -10,10 +10,9 @@
         }
     ],
     "require": {
-        "php": ">=5.5.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "~4.5",
+        "contao/core-bundle": "~3.5 || ~4.1",
+        "contao-community-alliance/composer-plugin": "~2.4 || ~3.0",
+        "digitalingenieur/churchtools-php-sdk": "~0.1"
     },
     "autoload": {
         "psr-4": {

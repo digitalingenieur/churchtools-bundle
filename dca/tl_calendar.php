@@ -73,7 +73,7 @@ class tl_calendar_churchtools extends Backend {
 	
 		//Execute Api Call only in "Edit mode" (create or update)	
 		if(\Input::get('act') == 'edit'){
-			$categories = \Diging\ChurchtoolsAPI\Models\Calendar::get();
+			$categories = \Diging\ChurchtoolsSDK\Models\Calendar::get();
 			
 			foreach($categories as $category){
 				$arrCalendars[$category->id] = $category->name;

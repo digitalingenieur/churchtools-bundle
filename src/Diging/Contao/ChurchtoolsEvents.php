@@ -42,6 +42,8 @@ class ChurchtoolsEvents extends \Events{
      * @return mixed
      */
 
+/*
+//NOT USED ANYMORE
     public function getChurchtoolsEvents($arrEvents, $arrCalendars, $intStart, $intEnd){
 
         $this->arrEvents = $arrEvents;
@@ -99,6 +101,7 @@ class ChurchtoolsEvents extends \Events{
 
         return $this->arrEvents;
     }
+    */
 
     public function loadEvents(){
 
@@ -130,7 +133,7 @@ class ChurchtoolsEvents extends \Events{
     {
         $churchtoolCalendar = deserialize($this->calendar->churchtoolsCalendars);
 
-        $events = \Diging\ChurchtoolsAPI\Models\Event::getByCategories($churchtoolCalendar);
+        $events = \Diging\ChurchtoolsSDK\Models\Event::getByCategories($churchtoolCalendar);
     
         $this->deleteModels($events->modelKeys());
 

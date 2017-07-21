@@ -11,8 +11,6 @@
 
 
 ClassLoader::addClasses(array(
-	'Diging\\Contao\\ChurchtoolsBundle\\ChurchtoolsApi' => 'system/modules/churchtools/src/Diging/Contao/ChurchtoolsApi.php',
-    'Diging\\Contao\\ChurchtoolsBundle\\ChurchtoolsAuthentication' => 'system/modules/churchtools/src/Diging/Contao/ChurchtoolsAuthentication.php',
     'Diging\\Contao\\ChurchtoolsBundle\\ChurchtoolsEvents' => 'system/modules/churchtools/src/Diging/Contao/ChurchtoolsEvents.php'
 ));
 

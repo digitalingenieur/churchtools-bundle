@@ -1,5 +1,5 @@
 {
-    "name": "digitalingenieur/churchtools-bundle",
+    "name": "digitalingenieur/contao-churchtools",
     "type": "contao-module",
     "description": "Contao 4 Churchtools bundle",
     "license": "LGPL-3.0+",

@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 /**
  * Contao Churchtools-Bundle
@@ -36,7 +36,7 @@ $GLOBALS['TL_DCA']['tl_calendar']['fields']['churchtoolsCalendars'] = array
 	'filter'                  => true,
 	'inputType'               => 'checkbox',
 	'eval'                    => array('mandatory'=>true, 'multiple'=>true),
-	'options_callback'		  => array('tl_calendar_churchtools','getCalendarsFromChurchtools'),
+	'options_callback'		  => ['diging.churchtools.backend.calendar','getChurchtoolsCalendars'],
 	'sql'                     => "blob NULL"
 );
 

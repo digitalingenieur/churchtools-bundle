@@ -1,22 +1,17 @@
 <?php
 
 /*
- * This file is part of Contao Churchtools Bundle.
+ * This file is part of [package name].
  *
- * Copyright (c) 2016 Samuel Heer
+ * (c) John Doe
  *
- * @license LGPL-3.0+
+ * @license LGPL-3.0-or-later
  */
 
 namespace Diging\ChurchtoolsBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-/**
- * Configures the Contao Churchtools bundle.
- *
- * @author Leo Feyer <https://github.com/leofeyer>
- */
 class ContaoChurchtoolsBundle extends Bundle
 {
 }

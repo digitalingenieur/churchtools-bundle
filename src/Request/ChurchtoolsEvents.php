@@ -8,7 +8,7 @@
  * @license LGPL-3.0+
  */
 
-namespace Diging\Contao\ChurchtoolsBundle;
+namespace Diging\ChurchtoolsBundle\Request;
 
 /**
  * Provide methods consuming events from churchtools api.

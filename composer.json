@@ -31,10 +31,6 @@
         "preferred-install": "dist"
     },
     "extra": {
-        "contao":{
-            "sources":{
-                "":"system/modules/churchtools"
-            }
-        }
+        "contao-manager-plugin": "Diging\\ChurchtoolsBundle\\ContaoManager\\Plugin"
     }
 }

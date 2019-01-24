@@ -10,11 +10,12 @@
 
 namespace Diging\ChurchtoolsBundle\ContaoManager;
 
+use Contao\CalendarBundle\ContaoCalendarBundle;
 use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
-use Contao\SkeletonBundle\ContaoSkeletonBundle;
+use Diging\ChurchtoolsBundle\DigingChurchtoolsBundle;
 
 class Plugin implements BundlePluginInterface
 {
@@ -23,8 +24,9 @@ class Plugin implements BundlePluginInterface
      */
     public function getBundles(ParserInterface $parser)
     {
+        dump('mybundle');
         return [
-            BundleConfig::create(ContaoChurchtoolsBundle::class)
+            BundleConfig::create(DigingChurchtoolsBundle::class)
                 ->setLoadAfter([ContaoCalendarBundle::class]),
         ];
     }

@@ -12,6 +12,7 @@ namespace Diging\ChurchtoolsBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class ContaoChurchtoolsBundle extends Bundle
+class DigingChurchtoolsBundle extends Bundle
 {
+
 }

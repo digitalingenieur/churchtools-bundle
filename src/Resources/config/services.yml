@@ -9,5 +9,6 @@ services:
                 - ["setContainer", ["@service_container"]]
     diging.churchtools.backend.calendar:
         class: Diging\ChurchtoolsBundle\Backend\Calendar
+        public: true
         arguments:
             - "@contao.framework"
